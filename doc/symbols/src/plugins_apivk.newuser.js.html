@@ -1,0 +1,179 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>  2</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">msg_install</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'Для работы приложения его необходимо &lt;a href="#" id="APIVK_msga">установить&lt;/a>'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  3</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">msg_settings</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'Для работы приложения необходимо установить требуемые &lt;a href="#" id="APIVK_msga">настройки&lt;/a>'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  4</span> 
+<span class='line'>  5</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>  6</span> 	 * Show message which don't allow user to use application. Used if user
+<span class='line'>  7</span> 	 * hasn't installed application or set wrong settins.
+<span class='line'>  8</span> 	 *
+<span class='line'>  9</span> 	 * @param {String} msg Message text to show.
+<span class='line'> 10</span> 	 * @param {Number} settings Settings value application need user to set.
+<span class='line'> 11</span> 	 */</span><span class="WHIT">
+<span class='line'> 12</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">showMessage</span><span class="PUNC">(</span><span class="NAME">msg</span><span class="WHIT"> </span><span class="COMM">/* , settings */</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 13</span> 
+<span class='line'> 14</span> </span><span class="WHIT">		</span><span class="COMM">//define settings if this is 'wrong settings' message</span><span class="WHIT">
+<span class='line'> 15</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">settings</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 16</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">arguments.length</span><span class="WHIT"> </span><span class="PUNC">></span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 17</span> </span><span class="WHIT">			</span><span class="NAME">settings</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 18</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 19</span> 
+<span class='line'> 20</span> </span><span class="WHIT">		</span><span class="COMM">//show message</span><span class="WHIT">
+<span class='line'> 21</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">document.getElementById</span><span class="PUNC">(</span><span class="STRN">'APIVK_msgbox'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 22</span> 
+<span class='line'> 23</span> </span><span class="WHIT">			</span><span class="COMM">//create new message box</span><span class="WHIT">
+<span class='line'> 24</span> </span><span class="WHIT">			</span><span class="NAME">document.getElementsByTagName</span><span class="PUNC">(</span><span class="STRN">'body'</span><span class="PUNC">)</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">innerHTML</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT">
+<span class='line'> 25</span> </span><span class="WHIT">				</span><span class="STRN">'&lt;div id="APIVK_msgbox" style="'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT">
+<span class='line'> 26</span> </span><span class="WHIT">				</span><span class="STRN">'position: absolute;'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT">
+<span class='line'> 27</span> </span><span class="WHIT">				</span><span class="STRN">'width: 100%; height: 100%;'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT">
+<span class='line'> 28</span> </span><span class="WHIT">				</span><span class="STRN">'margin: 0; padding: 50px 0 0 0;'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT">
+<span class='line'> 29</span> </span><span class="WHIT">				</span><span class="STRN">'border-top: #dbe2e8 1px solid;'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT">
+<span class='line'> 30</span> </span><span class="WHIT">				</span><span class="STRN">'top: 0; left: 0;'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT">
+<span class='line'> 31</span> </span><span class="WHIT">				</span><span class="STRN">'z-index: 100;'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT">
+<span class='line'> 32</span> </span><span class="WHIT">				</span><span class="STRN">'background: white; color: gray;'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT">
+<span class='line'> 33</span> </span><span class="WHIT">				</span><span class="STRN">'font-size:12px;'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT">
+<span class='line'> 34</span> </span><span class="WHIT">				</span><span class="STRN">'text-align:center;'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT">
+<span class='line'> 35</span> </span><span class="WHIT">				</span><span class="STRN">'">'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT">
+<span class='line'> 36</span> </span><span class="WHIT">				</span><span class="NAME">msg</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT">
+<span class='line'> 37</span> </span><span class="WHIT">				</span><span class="STRN">'&lt;/div>'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 38</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 39</span> 
+<span class='line'> 40</span> </span><span class="WHIT">			</span><span class="COMM">//just change text in existing message box</span><span class="WHIT">
+<span class='line'> 41</span> </span><span class="WHIT">			</span><span class="NAME">document.getElementById</span><span class="PUNC">(</span><span class="STRN">'APIVK_msgbox'</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">innerHTML</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">msg</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 42</span> </span><span class="WHIT">			</span><span class="NAME">document.getElementById</span><span class="PUNC">(</span><span class="STRN">'APIVK_msgbox'</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">style.display</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'block'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 43</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 44</span> 
+<span class='line'> 45</span> </span><span class="WHIT">		</span><span class="COMM">//create onclick handler</span><span class="WHIT">
+<span class='line'> 46</span> </span><span class="WHIT">		</span><span class="NAME">document.getElementById</span><span class="PUNC">(</span><span class="STRN">'APIVK_msga'</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">addEventListener</span><span class="PUNC">(</span><span class="STRN">'click'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 47</span> 
+<span class='line'> 48</span> </span><span class="WHIT">				</span><span class="COMM">//this is 'wrong settings' message</span><span class="WHIT">
+<span class='line'> 49</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">settings</span><span class="WHIT"> </span><span class="PUNC">>=</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 50</span> </span><span class="WHIT">					</span><span class="NAME">this_proxy.external.showSettingsBox</span><span class="PUNC">(</span><span class="NAME">settings</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 51</span> 
+<span class='line'> 52</span> </span><span class="WHIT">					</span><span class="COMM">//this is 'not installed' message</span><span class="WHIT">
+<span class='line'> 53</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 54</span> </span><span class="WHIT">					</span><span class="NAME">this_proxy.external.showInstallBox</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 55</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 56</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 57</span> </span><span class="WHIT">			</span><span class="KEYW">true</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">			</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 59</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 60</span> 
+<span class='line'> 61</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 62</span> 	 * Hide message previously shown with showMessage().
+<span class='line'> 63</span> 	 */</span><span class="WHIT">
+<span class='line'> 64</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">hideMessage</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">document.getElementById</span><span class="PUNC">(</span><span class="STRN">'APIVK_msgbox'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 66</span> </span><span class="WHIT">			</span><span class="NAME">document.getElementById</span><span class="PUNC">(</span><span class="STRN">'APIVK_msgbox'</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">style.display</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'none'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 67</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 69</span> 
+<span class='line'> 70</span> 
+<span class='line'> 71</span> </span><span class="WHIT">	</span><span class="COMM">/**** Public: ****/</span><span class="WHIT">
+<span class='line'> 72</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 73</span> 	 * Ask user to install application (add to their page) in indefinite
+<span class='line'> 74</span> 	 * loop until user finally installs application.
+<span class='line'> 75</span> 	 * Warning!  Application will ask user to install application until he
+<span class='line'> 76</span> 	 * did it, so if user don't want to add application to his page, he
+<span class='line'> 77</span> 	 * can't run application.
+<span class='line'> 78</span> 	 *
+<span class='line'> 79</span> 	 * @param {Function} ifInstalled Callback function which executed if and
+<span class='line'> 80</span> 	 *                             only if application is installed. First
+<span class='line'> 81</span> 	 *                             time function executes if user installs
+<span class='line'> 82</span> 	 *                             application after makeInstall() called.
+<span class='line'> 83</span> 	 *                             But unlike
+<span class='line'> 84</span> 	 *                             addCallback('onApplicationAdded', ...),
+<span class='line'> 85</span> 	 *                             this function executes even if
+<span class='line'> 86</span> 	 *                             application already added before
+<span class='line'> 87</span> 	 *                             makeInstall() called. This means that if
+<span class='line'> 88</span> 	 *                             you use makeInstall(fucnName) then
+<span class='line'> 89</span> 	 *                             funcName() will be executed every time
+<span class='line'> 90</span> 	 *                             user runs application, even if he
+<span class='line'> 91</span> 	 *                             installed application only once long time
+<span class='line'> 92</span> 	 *                             ago.
+<span class='line'> 93</span> 	 */</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="WHIT">	</span><span class="NAME">APIVK.prototype.makeInstall</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="COMM">/* ifInstalled */</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 95</span> 
+<span class='line'> 96</span> </span><span class="WHIT">		</span><span class="COMM">//define if there is ifInstalled callback</span><span class="WHIT">
+<span class='line'> 97</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">appInstalled</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 98</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">arguments.length</span><span class="WHIT"> </span><span class="PUNC">></span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 99</span> </span><span class="WHIT">			</span><span class="NAME">appInstalled</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>100</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>101</span> 
+<span class='line'>102</span> </span><span class="WHIT">		</span><span class="COMM">//current application settings and settings we need are different so</span><span class="WHIT">
+<span class='line'>103</span> </span><span class="WHIT">		</span><span class="COMM">//show installation window</span><span class="WHIT">
+<span class='line'>104</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this_proxy.params.is_app_user</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>105</span> 
+<span class='line'>106</span> </span><span class="WHIT">			</span><span class="COMM">//hide entire application with special message</span><span class="WHIT">
+<span class='line'>107</span> </span><span class="WHIT">			</span><span class="NAME">showMessage</span><span class="PUNC">(</span><span class="NAME">msg_install</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>108</span> 
+<span class='line'>109</span> </span><span class="WHIT">			</span><span class="NAME">this_proxy.external.showInstallBox</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>110</span> 
+<span class='line'>111</span> </span><span class="WHIT">			</span><span class="COMM">//when user adds application</span><span class="WHIT">
+<span class='line'>112</span> </span><span class="WHIT">			</span><span class="NAME">this.addCallback</span><span class="PUNC">(</span><span class="WHIT">
+<span class='line'>113</span> </span><span class="WHIT">			                 </span><span class="STRN">'onApplicationAdded'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>114</span> </span><span class="WHIT">			                 </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>115</span> 
+<span class='line'>116</span> </span><span class="WHIT">				                 </span><span class="COMM">//set new settings as current and verify if settings are</span><span class="WHIT">
+<span class='line'>117</span> </span><span class="WHIT">				                 </span><span class="COMM">//correct again</span><span class="WHIT">
+<span class='line'>118</span> </span><span class="WHIT">				                 </span><span class="NAME">this_proxy.params.is_app_user</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>119</span> </span><span class="WHIT">				                 </span><span class="NAME">hideMessage</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>120</span> 
+<span class='line'>121</span> </span><span class="WHIT">				                 </span><span class="COMM">//application added so run appInstalled</span><span class="WHIT">
+<span class='line'>122</span> </span><span class="WHIT">				                 </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">appInstalled</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="NAME">appInstalled</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>123</span> </span><span class="WHIT">			                 </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>124</span> </span><span class="WHIT">			                 </span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>125</span> 
+<span class='line'>126</span> </span><span class="WHIT">			</span><span class="COMM">//application is already installed, so just run callback</span><span class="WHIT">
+<span class='line'>127</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>128</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">appInstalled</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="NAME">appInstalled</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>129</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>130</span> 
+<span class='line'>131</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>132</span> 
+<span class='line'>133</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>134</span> 	 * Ask user to set appropriate settings and wait for user to do it.
+<span class='line'>135</span> 	 * Warning! Application will ask user to specify settings until he did
+<span class='line'>136</span> 	 * it, so if user don't want to set your settings, he can't run
+<span class='line'>137</span> 	 * application.
+<span class='line'>138</span> 	 *
+<span class='line'>139</span> 	 * @param {Number} settings Settings you want user to set to application.
+<span class='line'>140</span> 	 *                        You can use either integer value according to
+<span class='line'>141</span> 	 *                        official Vkontakte documentation on
+<span class='line'>142</span> 	 *                        http://vkontakte.ru/page7002134 or combination
+<span class='line'>143</span> 	 *                        of .SETT_* constants.
+<span class='line'>144</span> 	 */</span><span class="WHIT">
+<span class='line'>145</span> </span><span class="WHIT">	</span><span class="NAME">APIVK.prototype.makeSettings</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">settings</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>146</span> 
+<span class='line'>147</span> </span><span class="WHIT">		</span><span class="COMM">//current application settings and settings we need are different so</span><span class="WHIT">
+<span class='line'>148</span> </span><span class="WHIT">		</span><span class="COMM">//show settings-change window</span><span class="WHIT">
+<span class='line'>149</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">this_proxy.params.api_settings</span><span class="WHIT"> </span><span class="PUNC">&</span><span class="WHIT"> </span><span class="NAME">settings</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NAME">settings</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>150</span> 
+<span class='line'>151</span> </span><span class="WHIT">			</span><span class="COMM">//hide entire application with special message</span><span class="WHIT">
+<span class='line'>152</span> </span><span class="WHIT">			</span><span class="NAME">showMessage</span><span class="PUNC">(</span><span class="NAME">msg_settings</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">settings</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>153</span> 
+<span class='line'>154</span> </span><span class="WHIT">			</span><span class="NAME">this_proxy.external.showSettingsBox</span><span class="PUNC">(</span><span class="NAME">settings</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>155</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>156</span> 
+<span class='line'>157</span> </span><span class="WHIT">		</span><span class="COMM">//when settings changed</span><span class="WHIT">
+<span class='line'>158</span> </span><span class="WHIT">		</span><span class="NAME">this.addCallback</span><span class="PUNC">(</span><span class="STRN">'onSettingsChanged'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">new_settings</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>159</span> 
+<span class='line'>160</span> </span><span class="WHIT">				</span><span class="COMM">//set new settings as current and verify if settings are</span><span class="WHIT">
+<span class='line'>161</span> </span><span class="WHIT">				</span><span class="COMM">//correct again</span><span class="WHIT">
+<span class='line'>162</span> </span><span class="WHIT">				</span><span class="NAME">this_proxy.params.api_settings</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">new_settings</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>163</span> 
+<span class='line'>164</span> </span><span class="WHIT">				</span><span class="COMM">//current application settings and settings we need are the</span><span class="WHIT">
+<span class='line'>165</span> </span><span class="WHIT">				</span><span class="COMM">//same so hide message window</span><span class="WHIT">
+<span class='line'>166</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">this_proxy.params.api_settings</span><span class="WHIT"> </span><span class="PUNC">&</span><span class="WHIT"> </span><span class="NAME">settings</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">settings</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>167</span> </span><span class="WHIT">					</span><span class="NAME">hideMessage</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>168</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>169</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>170</span> </span><span class="WHIT">			</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>171</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>172</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">(</span><span class="PUNC">)</span></pre></body></html>
