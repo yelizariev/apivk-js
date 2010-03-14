@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="apivk-js.googlecode.com" basedir="../" default="doc">
+	<property file="build/build.properties" />
+	<property name="jsdoc.template" value="templates/jsdoc"/>
+
+	<target name="doc">
+		<exec executable="java" >
+			<arg line="-jar ${jsrun.jar}"  />
+			<arg line="${run.js}"  />
+			<arg line="--directory=doc"  />
+			<arg line="--template=${jsdochome}/${jsdoc.template}"  />
+			<arg line="src"  />
+			<arg line="plugins"  />
+		</exec>
+	</target>
+</project>
