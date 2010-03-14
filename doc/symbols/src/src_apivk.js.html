@@ -1,0 +1,469 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">// -*- coding: utf-8 -*-</span><span class="WHIT">
+<span class='line'>  2</span> 
+<span class='line'>  3</span> </span><span class="COMM">// Copyright (c) 2010 The apivk-js.googlecode.com project Authors.</span><span class="WHIT">
+<span class='line'>  4</span> </span><span class="COMM">// All rights reserved. Use of this source code is governed</span><span class="WHIT">
+<span class='line'>  5</span> </span><span class="COMM">// by a BSD-style license that can be found in the LICENSE file.</span><span class="WHIT">
+<span class='line'>  6</span> 
+<span class='line'>  7</span> </span><span class="COMM">// url in repo: $URL: https://apivk-js.googlecode.com/svn/trunk/src/apivk.js $</span><span class="WHIT">
+<span class='line'>  8</span> </span><span class="COMM">// Author   of current version: $Author: ivann.exe $</span><span class="WHIT">
+<span class='line'>  9</span> </span><span class="COMM">// Date     of current version: $Date: 2010-03-14 13:22:09 +0500 (Sun, 14 Mar 2010) $</span><span class="WHIT">
+<span class='line'> 10</span> </span><span class="COMM">// Revision of current version: $Rev: 2 $</span><span class="WHIT">
+<span class='line'> 11</span> 
+<span class='line'> 12</span> </span><span class="COMM">// Based on http://code.google.com/p/vk-jsapi</span><span class="WHIT">
+<span class='line'> 13</span> 
+<span class='line'> 14</span> 
+<span class='line'> 15</span> 
+<span class='line'> 16</span> </span><span class="COMM">/**
+<span class='line'> 17</span>  * Create new object to call Vkontakte API throurh it.
+<span class='line'> 18</span>  *
+<span class='line'> 19</span>  * @class
+<span class='line'> 20</span>  * @param {String} api_secret Application sercet (can be
+<span class='line'> 21</span>  * changed on application edit page).
+<span class='line'> 22</span>  * @param {Function} success Function to perform after API
+<span class='line'> 23</span>  * initialised.
+<span class='line'> 24</span>  * @param {Function} error Function to perform if API
+<span class='line'> 25</span>  * initialisation fails for msome reason.
+<span class='line'> 26</span>  * @param {Boolean} test_mode If set to true then all
+<span class='line'> 27</span>  * requests will be executed in test mode - additional parameter
+<span class='line'> 28</span>  * test_mode=1 will be automatically added to every API request, so
+<span class='line'> 29</span>  * you needn't do it manually.
+<span class='line'> 30</span>  */</span><span class="WHIT">
+<span class='line'> 31</span> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">APIVK</span><span class="PUNC">(</span><span class="NAME">api_secret</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">success</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">error</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">test_mode</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 32</span> </span><span class="WHIT">	</span><span class="COMM">/****************** Private Constants and variables *******************/</span><span class="WHIT">
+<span class='line'> 33</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 34</span> 	 * @constant
+<span class='line'> 35</span> 	 * @private
+<span class='line'> 36</span> 	 */</span><span class="WHIT">
+<span class='line'> 37</span> </span><span class="WHIT">	</span><span class="KEYW">const</span><span class="WHIT"> </span><span class="NAME">vk_js_xd_connection</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'http://vk.com/js/xd_connection.js'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 38</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 39</span> 	 * @constant
+<span class='line'> 40</span> 	 * @private
+<span class='line'> 41</span> 	 */</span><span class="WHIT">
+<span class='line'> 42</span> </span><span class="WHIT">	</span><span class="KEYW">const</span><span class="WHIT"> </span><span class="NAME">vk_js_lib_md5</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'http://vk.com/js/lib/md5.js'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 43</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 44</span> 	 * @constant
+<span class='line'> 45</span> 	 * @private
+<span class='line'> 46</span> 	 */</span><span class="WHIT">
+<span class='line'> 47</span> </span><span class="WHIT">	</span><span class="KEYW">const</span><span class="WHIT"> </span><span class="NAME">api_version</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'2.0'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 49</span> 	 * Queue of callback functions used by addCallback() to perform correct
+<span class='line'> 50</span> 	 * processing of multiple events assigned in different places
+<span class='line'> 51</span> 	 * @private
+<span class='line'> 52</span> 	 */</span><span class="WHIT">
+<span class='line'> 53</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">callbacks</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 54</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 55</span> 	 * Queue of api request used when handle error 6 "too many
+<span class='line'> 56</span> 
+<span class='line'> 57</span> 	 * requests per second"
+<span class='line'> 58</span> 	 * @private
+<span class='line'> 59</span> 	 */</span><span class="WHIT">
+<span class='line'> 60</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">apiQueue</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 61</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 62</span> 	 * timer delay, when got error 6
+<span class='line'> 63</span> 	 * @private
+<span class='line'> 64</span> 	 */</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">timer</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 66</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 67</span> 	 * @private
+<span class='line'> 68</span> 	 */</span><span class="WHIT">
+<span class='line'> 69</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">timerIntervar</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">400</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 70</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 71</span> 	 * set of api response handlers unique for each api request
+<span class='line'> 72</span> 	 * @private
+<span class='line'> 73</span> 	 */</span><span class="WHIT">
+<span class='line'> 74</span> </span><span class="WHIT">	</span><span class="NAME">apivkHandlers</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 75</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 76</span> 	 * num of api request used for make unique name callback function
+<span class='line'> 77</span> 	 * in api request
+<span class='line'> 78</span> 	 * @private
+<span class='line'> 79</span> 	 */</span><span class="WHIT">
+<span class='line'> 80</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">apiHandlerNum</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 81</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 82</span> 	 * Hack to use 'this' reference in callback functions in private methods
+<span class='line'> 83</span> 	 * @private
+<span class='line'> 84</span> 	 */</span><span class="WHIT">
+<span class='line'> 85</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">this_proxy</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 86</span> </span><span class="WHIT">	</span><span class="COMM">/***************** /Private Constants and variables *******************/</span><span class="WHIT">
+<span class='line'> 87</span> 
+<span class='line'> 88</span> </span><span class="WHIT">	</span><span class="COMM">/************************** Public Constants **************************/</span><span class="WHIT">
+<span class='line'> 89</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 90</span> 	 * There is set of settings constants to modify application permissions
+<span class='line'> 91</span> 	 * using external.showSettingsBox() method/
+<span class='line'> 92</span> 	 */</span><span class="WHIT">
+<span class='line'> 93</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 94</span> 	 * @const Number
+<span class='line'> 95</span> 	 * @type Number
+<span class='line'> 96</span> 	 */</span><span class="WHIT">
+<span class='line'> 97</span> </span><span class="WHIT">	</span><span class="NAME">this.SETT_NOTIFY</span><span class="WHIT">    </span><span class="PUNC">=</span><span class="WHIT">   </span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//allow to send notifications</span><span class="WHIT">
+<span class='line'> 98</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 99</span> 	 * @const Number
+<span class='line'>100</span> 	 * @type Number
+<span class='line'>101</span> 	 */</span><span class="WHIT">
+<span class='line'>102</span> </span><span class="WHIT">	</span><span class="NAME">this.SETT_FRIENDS</span><span class="WHIT">   </span><span class="PUNC">=</span><span class="WHIT">   </span><span class="NUMB">2</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//add access to friends</span><span class="WHIT">
+<span class='line'>103</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>104</span> 	 * @const Number
+<span class='line'>105</span> 	 * @type Number
+<span class='line'>106</span> 	 */</span><span class="WHIT">
+<span class='line'>107</span> </span><span class="WHIT">	</span><span class="NAME">this.SETT_PHOTOS</span><span class="WHIT">    </span><span class="PUNC">=</span><span class="WHIT">   </span><span class="NUMB">4</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//add access to photos</span><span class="WHIT">
+<span class='line'>108</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>109</span> 	 * @const Number
+<span class='line'>110</span> 	 * @type Number
+<span class='line'>111</span> 	 */</span><span class="WHIT">
+<span class='line'>112</span> </span><span class="WHIT">	</span><span class="NAME">this.SETT_AUDIO</span><span class="WHIT">     </span><span class="PUNC">=</span><span class="WHIT">   </span><span class="NUMB">8</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//add access to audio</span><span class="WHIT">
+<span class='line'>113</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>114</span> 	 * @const Number
+<span class='line'>115</span> 	 * @type Number
+<span class='line'>116</span> 	 */</span><span class="WHIT">
+<span class='line'>117</span> </span><span class="WHIT">	</span><span class="NAME">this.SETT_OFFER</span><span class="WHIT">     </span><span class="PUNC">=</span><span class="WHIT">  </span><span class="NUMB">32</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//add access to offers</span><span class="WHIT">
+<span class='line'>118</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>119</span> 	 * @const Number
+<span class='line'>120</span> 	 * @type Number
+<span class='line'>121</span> 	 */</span><span class="WHIT">
+<span class='line'>122</span> </span><span class="WHIT">	</span><span class="NAME">this.SETT_QUESTIONS</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT">  </span><span class="NUMB">64</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//add access to questions</span><span class="WHIT">
+<span class='line'>123</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>124</span> 	 * @const Number
+<span class='line'>125</span> 	 * @type Number
+<span class='line'>126</span> 	 */</span><span class="WHIT">
+<span class='line'>127</span> </span><span class="WHIT">	</span><span class="NAME">this.SETT_WIKI</span><span class="WHIT">      </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">128</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//add access to Wiki-pages</span><span class="WHIT">
+<span class='line'>128</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>129</span> 	 * @const Number
+<span class='line'>130</span> 	 * @type Number
+<span class='line'>131</span> 	 */</span><span class="WHIT">
+<span class='line'>132</span> </span><span class="WHIT">	</span><span class="NAME">this.SETT_MENU</span><span class="WHIT">      </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">256</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//add access to left menu</span><span class="WHIT">
+<span class='line'>133</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>134</span> 	 * @const Number
+<span class='line'>135</span> 	 * @type Number
+<span class='line'>136</span> 	 */</span><span class="WHIT">
+<span class='line'>137</span> </span><span class="WHIT">	</span><span class="NAME">this.SETT_WALL</span><span class="WHIT">      </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">512</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//add access to user wall</span><span class="WHIT">
+<span class='line'>138</span> </span><span class="WHIT">	</span><span class="COMM">/************************* /Public Constants **************************/</span><span class="WHIT">
+<span class='line'>139</span> 
+<span class='line'>140</span> 
+<span class='line'>141</span> 
+<span class='line'>142</span> </span><span class="WHIT">	</span><span class="COMM">/************************* Public Properties **************************/</span><span class="WHIT">
+<span class='line'>143</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>144</span> 	 * Parameters, which were sent to application through request string
+<span class='line'>145</span> 	 * @type Object
+<span class='line'>146</span> 	 */</span><span class="WHIT">
+<span class='line'>147</span> </span><span class="WHIT">	</span><span class="NAME">this.params</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>148</span> </span><span class="WHIT">	</span><span class="COMM">/************************ /Public Properties **************************/</span><span class="WHIT">
+<span class='line'>149</span> 
+<span class='line'>150</span> 
+<span class='line'>151</span> </span><span class="WHIT">	</span><span class="COMM">/****************************** Methods *******************************/</span><span class="WHIT">
+<span class='line'>152</span> </span><span class="WHIT">	</span><span class="COMM">/**** Private: ****/</span><span class="WHIT">
+<span class='line'>153</span> 
+<span class='line'>154</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>155</span> 	 * Sort key-value pairs in objects by alphaber in ascending order.
+<span class='line'>156</span> 	 *
+<span class='line'>157</span> 	 * @private
+<span class='line'>158</span> 	 * @param {Object} obj Object which keys to sort.
+<span class='line'>159</span> 	 * @returns {Object} Object with the same set key-value pairs as 'obj' but
+<span class='line'>160</span> 	 *                sorted in ascending order.
+<span class='line'>161</span> 	 */</span><span class="WHIT">
+<span class='line'>162</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_sortByKey</span><span class="PUNC">(</span><span class="NAME">obj</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>163</span> 
+<span class='line'>164</span> </span><span class="WHIT">		</span><span class="COMM">//make Array from object keys</span><span class="WHIT">
+<span class='line'>165</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">keys</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Array</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>166</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">k</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">obj</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>167</span> </span><span class="WHIT">			</span><span class="NAME">keys.push</span><span class="PUNC">(</span><span class="NAME">k</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>168</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>169</span> 
+<span class='line'>170</span> </span><span class="WHIT">		</span><span class="COMM">//sort Array</span><span class="WHIT">
+<span class='line'>171</span> </span><span class="WHIT">		</span><span class="NAME">keys.sort</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>172</span> 
+<span class='line'>173</span> </span><span class="WHIT">		</span><span class="COMM">//form new object with keys sorted alphabetically</span><span class="WHIT">
+<span class='line'>174</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">sortedObj</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>175</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">&lt;</span><span class="WHIT"> </span><span class="NAME">keys.length</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>176</span> </span><span class="WHIT">			</span><span class="NAME">sortedObj</span><span class="PUNC">[</span><span class="NAME">keys</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">obj</span><span class="PUNC">[</span><span class="NAME">keys</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>177</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>178</span> 
+<span class='line'>179</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">sortedObj</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>180</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>181</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>182</span> 	 * Perform XSS-request (load JavaScript).
+<span class='line'>183</span> 	 *
+<span class='line'>184</span> 	 * @private
+<span class='line'>185</span> 	 * @param String url URL of JavaScript file to load and execute in
+<span class='line'>186</span> 	 * context of this page.
+<span class='line'>187</span> 	 */</span><span class="WHIT">
+<span class='line'>188</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_reqScript</span><span class="PUNC">(</span><span class="NAME">url</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>189</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">script</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">document.createElement</span><span class="PUNC">(</span><span class="STRN">'script'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>190</span> </span><span class="WHIT">		</span><span class="NAME">script.type</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'text/javascript'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>191</span> </span><span class="WHIT">		</span><span class="NAME">script.src</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">url</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>192</span> </span><span class="WHIT">		</span><span class="NAME">document.getElementsByTagName</span><span class="PUNC">(</span><span class="STRN">'head'</span><span class="PUNC">)</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">appendChild</span><span class="PUNC">(</span><span class="NAME">script</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>193</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>194</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>195</span> 	 * @private
+<span class='line'>196</span> 	 */</span><span class="WHIT">
+<span class='line'>197</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_onError6</span><span class="PUNC">(</span><span class="NAME">args</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>198</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">timer</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>199</span> </span><span class="WHIT">			</span><span class="NAME">apiQueue.push</span><span class="PUNC">(</span><span class="NAME">args</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>200</span> </span><span class="WHIT">		</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>201</span> </span><span class="WHIT">			</span><span class="NAME">timer</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">setInterval</span><span class="PUNC">(</span><span class="NAME">_onTimer</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">timerIntervar</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>202</span> </span><span class="WHIT">			</span><span class="NAME">_call</span><span class="PUNC">(</span><span class="NAME">args</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>203</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>204</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>205</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>206</span> 	 * @private
+<span class='line'>207</span> 	 */</span><span class="WHIT">
+<span class='line'>208</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_onTimer</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>209</span> </span><span class="WHIT">		</span><span class="NAME">args</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">apiQueue.shift</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="COMM">//fifo</span><span class="WHIT">
+<span class='line'>210</span> </span><span class="WHIT">		</span><span class="NAME">_call</span><span class="PUNC">(</span><span class="NAME">args</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>211</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">apiQueue.length</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>212</span> </span><span class="WHIT">			</span><span class="NAME">clearInterval</span><span class="PUNC">(</span><span class="NAME">timer</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>213</span> </span><span class="WHIT">			</span><span class="NAME">timer</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>214</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>215</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>216</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>217</span> 	 * @private
+<span class='line'>218</span> 	 */</span><span class="WHIT">
+<span class='line'>219</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_call</span><span class="PUNC">(</span><span class="NAME">args</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>220</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">method</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">args</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>221</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">req</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">args.length</span><span class="PUNC">></span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">?</span><span class="WHIT"> </span><span class="NAME">args</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">:</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>222</span> 
+<span class='line'>223</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">hNum</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">apiHandlerNum</span><span class="PUNC">++</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>224</span> </span><span class="WHIT">		</span><span class="NAME">apivkHandlers</span><span class="PUNC">[</span><span class="STRN">'func'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">hNum</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">json</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>225</span> </span><span class="WHIT">			</span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">apivkHandlers</span><span class="PUNC">[</span><span class="STRN">'func'</span><span class="PUNC">+</span><span class="NAME">hNum</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>226</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">json.response</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>227</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">req.success</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>228</span> </span><span class="WHIT">					</span><span class="NAME">req.success</span><span class="PUNC">(</span><span class="NAME">json.response</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>229</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">json.error</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>230</span> </span><span class="WHIT">				</span><span class="NAME">json</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">json.error</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>231</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">json.error_code</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NUMB">6</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>232</span> </span><span class="WHIT">					</span><span class="NAME">_onError6</span><span class="PUNC">(</span><span class="NAME">args</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>233</span> </span><span class="WHIT">				</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">req.error</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>234</span> </span><span class="WHIT">					</span><span class="NAME">req.error</span><span class="PUNC">(</span><span class="NAME">json.error_code</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">json.error_msg</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">json.request_params</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>235</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>236</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>237</span> 
+<span class='line'>238</span> 
+<span class='line'>239</span> </span><span class="WHIT">		</span><span class="COMM">//parameters to send to server</span><span class="WHIT">
+<span class='line'>240</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">parameters</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">req.params</span><span class="PUNC">)</span><span class="PUNC">?</span><span class="WHIT"> </span><span class="NAME">req.params</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>241</span> 
+<span class='line'>242</span> </span><span class="WHIT">		</span><span class="COMM">//append parameters with common strings</span><span class="WHIT">
+<span class='line'>243</span> </span><span class="WHIT">		</span><span class="NAME">parameters.api_id</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this_proxy.params.api_id</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>244</span> </span><span class="WHIT">		</span><span class="NAME">parameters.v</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">api_version</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>245</span> </span><span class="WHIT">		</span><span class="NAME">parameters.format</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'json'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>246</span> </span><span class="WHIT">		</span><span class="NAME">parameters.callback</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'apivkHandlers.func'</span><span class="PUNC">+</span><span class="NAME">hNum</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>247</span> 
+<span class='line'>248</span> </span><span class="WHIT">		</span><span class="COMM">//set test mode</span><span class="WHIT">
+<span class='line'>249</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">test_mode</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="NAME">parameters.test_mode</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'1'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>250</span> 
+<span class='line'>251</span> </span><span class="WHIT">		</span><span class="COMM">//append parameters with method name</span><span class="WHIT">
+<span class='line'>252</span> </span><span class="WHIT">		</span><span class="NAME">parameters.method</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">method</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>253</span> 
+<span class='line'>254</span> </span><span class="WHIT">		</span><span class="COMM">//sort parameters</span><span class="WHIT">
+<span class='line'>255</span> </span><span class="WHIT">		</span><span class="NAME">parameters</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">_sortByKey</span><span class="PUNC">(</span><span class="NAME">parameters</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>256</span> 
+<span class='line'>257</span> 
+<span class='line'>258</span> </span><span class="WHIT">		</span><span class="COMM">//calculate API signature and add it to parameters list</span><span class="WHIT">
+<span class='line'>259</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">sig</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this_proxy.params.viewer_id</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>260</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">k</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">parameters</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>261</span> 
+<span class='line'>262</span> </span><span class="WHIT">			</span><span class="COMM">//can be array</span><span class="WHIT">
+<span class='line'>263</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">parameters</span><span class="PUNC">[</span><span class="NAME">k</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">'object'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>264</span> </span><span class="WHIT">				</span><span class="NAME">sig</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">k</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">'='</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">parameters</span><span class="PUNC">[</span><span class="NAME">k</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">join</span><span class="PUNC">(</span><span class="STRN">','</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>265</span> 
+<span class='line'>266</span> </span><span class="WHIT">				</span><span class="COMM">//ordinar parameter</span><span class="WHIT">
+<span class='line'>267</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>268</span> </span><span class="WHIT">				</span><span class="NAME">sig</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">k</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">'='</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">parameters</span><span class="PUNC">[</span><span class="NAME">k</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>269</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>270</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>271</span> </span><span class="WHIT">		</span><span class="NAME">sig</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">api_secret</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>272</span> </span><span class="WHIT">		</span><span class="NAME">parameters.sig</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">MD5</span><span class="PUNC">(</span><span class="NAME">sig</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>273</span> 
+<span class='line'>274</span> </span><span class="WHIT">		</span><span class="COMM">//form URL to call</span><span class="WHIT">
+<span class='line'>275</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">url</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this_proxy.params.api_url</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">'?'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>276</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">k</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">parameters</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>277</span> </span><span class="WHIT">			</span><span class="NAME">url</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">k</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">'='</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">encodeURIComponent</span><span class="PUNC">(</span><span class="NAME">parameters</span><span class="PUNC">[</span><span class="NAME">k</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">'&'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>278</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>279</span> 
+<span class='line'>280</span> 
+<span class='line'>281</span> </span><span class="WHIT">		</span><span class="COMM">//load and execute script</span><span class="WHIT">
+<span class='line'>282</span> </span><span class="WHIT">		</span><span class="NAME">_reqScript</span><span class="PUNC">(</span><span class="NAME">url</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>283</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>284</span> 
+<span class='line'>285</span> </span><span class="WHIT">	</span><span class="COMM">/**** Public: ****/</span><span class="WHIT">
+<span class='line'>286</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>287</span> 	 * Call Vkontakte API method.
+<span class='line'>288</span> 	 * @param {String} method Method name to execute.
+<span class='line'>289</span> 	 * @param {Object} [req] see below
+<span class='line'>290</span> 	 * @param {Object} req.params Parameters of API method in the following
+<span class='line'>291</span> 	 *                          form:
+<span class='line'>292</span> 	 *                          {
+<span class='line'>293</span> 	 *                              name1: 'value 1',
+<span class='line'>294</span> 	 *                              name2: 'value 2',
+<span class='line'>295</span> 	 *
+<span class='line'>296</span> 	 *                              //arrays are also allowed
+<span class='line'>297</span> 	 *                              name3: [
+<span class='line'>298</span> 	 *                                  'array_value_1',
+<span class='line'>299</span> 	 *                                  'array_value_2',
+<span class='line'>300</span> 	 *                                  'array_value_3'
+<span class='line'>301</span> 	 *                              ]
+<span class='line'>302</span> 	 *                          }
+<span class='line'>303</span> 	 * @param {Function} req.success Callback function to perform when
+<span class='line'>304</span> 	 * answer from API call comes from server.  success(data), data -
+<span class='line'>305</span> 	 * content of "response" json node
+<span class='line'>306</span> 	 * @param {Function} req.error Callback function to perform when
+<span class='line'>307</span> 	 * answer from API call comes from server.  error(code, msg,
+<span class='line'>308</span> 	 * reqParams)
+<span class='line'>309</span> 	 */</span><span class="WHIT">
+<span class='line'>310</span> </span><span class="WHIT">	</span><span class="NAME">this.call</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">method</span><span class="COMM">/*, req*/</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>311</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">timer</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>312</span> </span><span class="WHIT">			</span><span class="NAME">apiQueue.push</span><span class="PUNC">(</span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>313</span> </span><span class="WHIT">		</span><span class="KEYW">else</span><span class="WHIT">
+<span class='line'>314</span> </span><span class="WHIT">			</span><span class="NAME">_call</span><span class="PUNC">(</span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>315</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>316</span> </span><span class="WHIT">	</span><span class="COMM">/***************************** /Methods *******************************/</span><span class="WHIT">
+<span class='line'>317</span> 
+<span class='line'>318</span> </span><span class="WHIT">	</span><span class="COMM">/************************ Initialize object ***************************/</span><span class="WHIT">
+<span class='line'>319</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>320</span> 	 * @private
+<span class='line'>321</span> 	 */</span><span class="WHIT">
+<span class='line'>322</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">test_mode</span><span class="WHIT">  </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">test_mode</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>323</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>324</span> 	 * @private
+<span class='line'>325</span> 	 */</span><span class="WHIT">
+<span class='line'>326</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">api_secret</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">api_secret</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>327</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>328</span> 	 * on success init
+<span class='line'>329</span> 	 * @private
+<span class='line'>330</span> 	 */</span><span class="WHIT">
+<span class='line'>331</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">onSuccess</span><span class="WHIT">  </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">success</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>332</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>333</span> 	 * on init failure
+<span class='line'>334</span> 	 * @private
+<span class='line'>335</span> 	 */</span><span class="WHIT">
+<span class='line'>336</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">onError</span><span class="WHIT">    </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">error</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>337</span> </span><span class="WHIT">	</span><span class="COMM">//request MD5 function from vkontakte</span><span class="WHIT">
+<span class='line'>338</span> </span><span class="WHIT">	</span><span class="NAME">_reqScript</span><span class="PUNC">(</span><span class="NAME">vk_js_lib_md5</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>339</span> 
+<span class='line'>340</span> </span><span class="WHIT">	</span><span class="COMM">//first of all we need to load special library from vk.com</span><span class="WHIT">
+<span class='line'>341</span> </span><span class="WHIT">	</span><span class="NAME">_reqScript</span><span class="PUNC">(</span><span class="NAME">vk_js_xd_connection</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>342</span> 
+<span class='line'>343</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>344</span> 	 * wait to 'APIVK_ibnitializer' to load
+<span class='line'>345</span> 	 * @private
+<span class='line'>346</span> 	 */</span><span class="WHIT">
+<span class='line'>347</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">VKLOAD_intervel</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">setInterval</span><span class="PUNC">(</span><span class="NAME">apivkInit</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">100</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>348</span> 
+<span class='line'>349</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>350</span> 	 * Perform when 'APIVK_initializer' loaded.
+<span class='line'>351</span> 	 * @private
+<span class='line'>352</span> 	 */</span><span class="WHIT">
+<span class='line'>353</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">apivkInit</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>354</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">VK</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">'undefined'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">MD5</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">'undefined'</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>355</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>356</span> </span><span class="WHIT">		</span><span class="NAME">clearInterval</span><span class="PUNC">(</span><span class="NAME">VKLOAD_intervel</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>357</span> 
+<span class='line'>358</span> </span><span class="WHIT">		</span><span class="COMM">//initialize VK object</span><span class="WHIT">
+<span class='line'>359</span> </span><span class="WHIT">		</span><span class="NAME">VK.init</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>360</span> </span><span class="WHIT">				</span><span class="COMM">//Perform on successful</span><span class="WHIT">
+<span class='line'>361</span> 
+<span class='line'>362</span> </span><span class="WHIT">				</span><span class="COMM">//get VK.params and translate it to APIVK.params</span><span class="WHIT">
+<span class='line'>363</span> </span><span class="WHIT">				</span><span class="NAME">VK.loadParams</span><span class="PUNC">(</span><span class="NAME">document.location.href</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>364</span> </span><span class="WHIT">				</span><span class="NAME">this_proxy.params</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">VK.params</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>365</span> 
+<span class='line'>366</span> </span><span class="WHIT">				</span><span class="COMM">//parse json response from the first api call result if</span><span class="WHIT">
+<span class='line'>367</span> </span><span class="WHIT">				</span><span class="COMM">//it is not in XML</span><span class="WHIT">
+<span class='line'>368</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">this_proxy.params.api_result</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="STRN">'undefined'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT">
+<span class='line'>369</span> </span><span class="WHIT">				    </span><span class="PUNC">(</span><span class="NAME">this_proxy.params.api_result.indexOf</span><span class="PUNC">(</span><span class="STRN">'&lt;?xml'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>370</span> </span><span class="WHIT">				    </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>371</span> </span><span class="WHIT">					</span><span class="NAME">this_proxy.params.api_result</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">eval</span><span class="PUNC">(</span><span class="STRN">'('</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">this_proxy.params.api_result</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">')'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>372</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>373</span> 
+<span class='line'>374</span> </span><span class="WHIT">				</span><span class="COMM">/**
+<span class='line'>375</span> 				 * map VK.External methods to APIVK.external
+<span class='line'>376</span> 				 * @memberOf APIVK#
+<span class='line'>377</span> 				 * @name external
+<span class='line'>378</span> 				 * @type Object
+<span class='line'>379</span> 				 */</span><span class="WHIT">
+<span class='line'>380</span> </span><span class="WHIT">				</span><span class="NAME">this_proxy.external</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">VK.External</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>381</span> 
+<span class='line'>382</span> </span><span class="WHIT">				</span><span class="COMM">/**
+<span class='line'>383</span> 				 * Call external method.
+<span class='line'>384</span> 				 *
+<span class='line'>385</span> 				 * @methodOf APIVK#
+<span class='line'>386</span> 				 * @name callMethod
+<span class='line'>387</span> 				 * @param String method Method name to call. You can
+<span class='line'>388</span> 				 *                      call methods from external.*
+<span class='line'>389</span> 				 *                      (VK.External.*) with proper
+<span class='line'>390</span> 				 *                      parameters.
+<span class='line'>391</span> 				 */</span><span class="WHIT">
+<span class='line'>392</span> </span><span class="WHIT">				</span><span class="NAME">this_proxy.callMethod</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">method</span><span class="WHIT"> </span><span class="COMM">/*, ...*/</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>393</span> </span><span class="WHIT">					</span><span class="NAME">VK.callMethod.apply</span><span class="PUNC">(</span><span class="NAME">VK</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>394</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>395</span> 
+<span class='line'>396</span> </span><span class="WHIT">				</span><span class="COMM">/**
+<span class='line'>397</span> 				 * Add callback function.
+<span class='line'>398</span> 				 *
+<span class='line'>399</span> 				 * @methodOf APIVK#
+<span class='line'>400</span> 				 * @name addCallback
+<span class='line'>401</span> 				 * @param String name Name of event to which callback
+<span class='line'>402</span> 				 *                    will be added.
+<span class='line'>403</span> 				 * @param Function callback Callback function to run
+<span class='line'>404</span> 				 *                          after event 'name' occurs.
+<span class='line'>405</span> 				 * @return Number ID of assigned callback function.
+<span class='line'>406</span> 				 */</span><span class="WHIT">
+<span class='line'>407</span> </span><span class="WHIT">				</span><span class="NAME">this_proxy.addCallback</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">name</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>408</span> </span><span class="WHIT">					</span><span class="COMM">//add callback to the queue</span><span class="WHIT">
+<span class='line'>409</span> </span><span class="WHIT">					</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">callbacks</span><span class="PUNC">[</span><span class="NAME">name</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">'undefined'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>410</span> </span><span class="WHIT">						</span><span class="NAME">callbacks</span><span class="PUNC">[</span><span class="NAME">name</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Array</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>411</span> </span><span class="WHIT">						</span><span class="COMM">//add callback using VK</span><span class="WHIT">
+<span class='line'>412</span> </span><span class="WHIT">						</span><span class="NAME">VK.addCallback</span><span class="PUNC">(</span><span class="NAME">name</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>413</span> </span><span class="WHIT">								</span><span class="COMM">/**
+<span class='line'>414</span> 								 * Function uses callbacks queue to call all
+<span class='line'>415</span> 								 * functions that were added using addCallback()
+<span class='line'>416</span> 								 * in order it were added.
+<span class='line'>417</span> 								 */</span><span class="WHIT">
+<span class='line'>418</span> 
+<span class='line'>419</span> </span><span class="WHIT">								</span><span class="COMM">//call every callback in the queue</span><span class="WHIT">
+<span class='line'>420</span> </span><span class="WHIT">								</span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">c</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">callbacks</span><span class="PUNC">[</span><span class="NAME">name</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>421</span> 
+<span class='line'>422</span> </span><span class="WHIT">									</span><span class="COMM">//form callback call with arguments</span><span class="WHIT">
+<span class='line'>423</span> </span><span class="WHIT">									</span><span class="NAME">callbacks</span><span class="PUNC">[</span><span class="NAME">name</span><span class="PUNC">]</span><span class="PUNC">[</span><span class="NAME">c</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">apply</span><span class="PUNC">(</span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>424</span> </span><span class="WHIT">								</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>425</span> </span><span class="WHIT">							</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>426</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>427</span> </span><span class="WHIT">					</span><span class="NAME">callbacks</span><span class="PUNC">[</span><span class="NAME">name</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">push</span><span class="PUNC">(</span><span class="NAME">callback</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>428</span> </span><span class="WHIT">					</span><span class="COMM">//return so called ID of assigned callback function</span><span class="WHIT">
+<span class='line'>429</span> </span><span class="WHIT">					</span><span class="COMM">//to use it in removeCallback() function</span><span class="WHIT">
+<span class='line'>430</span> </span><span class="WHIT">					</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">callbacks</span><span class="PUNC">[</span><span class="NAME">name</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">length</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>431</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>432</span> 
+<span class='line'>433</span> </span><span class="WHIT">				</span><span class="COMM">/**
+<span class='line'>434</span> 				 * Remove callback function from the queue.
+<span class='line'>435</span> 				 *
+<span class='line'>436</span> 				 * @methodOf APIVK#
+<span class='line'>437</span> 				 * @name removeCallback
+<span class='line'>438</span> 				 * @param String name Name of event from which callback
+<span class='line'>439</span> 				 *                    will be removed.
+<span class='line'>440</span> 				 * @param Number callback_id ID of callback function to
+<span class='line'>441</span> 				 *                           remove from queue.
+<span class='line'>442</span> 				 */</span><span class="WHIT">
+<span class='line'>443</span> </span><span class="WHIT">				</span><span class="NAME">this_proxy.removeCallback</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">name</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback_id</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>444</span> </span><span class="WHIT">					</span><span class="COMM">//do not remove callback using low-level function</span><span class="WHIT">
+<span class='line'>445</span> </span><span class="WHIT">					</span><span class="COMM">//VK.removeCallback(name, callback);</span><span class="WHIT">
+<span class='line'>446</span> 
+<span class='line'>447</span> </span><span class="WHIT">					</span><span class="COMM">//remove function from the queue</span><span class="WHIT">
+<span class='line'>448</span> </span><span class="WHIT">					</span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">callbacks</span><span class="PUNC">[</span><span class="NAME">name</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">splice</span><span class="PUNC">(</span><span class="NAME">callback_id</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>449</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>450</span> </span><span class="WHIT">				</span><span class="COMM">//execute user initialisation function</span><span class="WHIT">
+<span class='line'>451</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">onSuccess</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>452</span> </span><span class="WHIT">					</span><span class="NAME">onSuccess</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>453</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>454</span> </span><span class="WHIT">			</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>455</span> </span><span class="WHIT">				</span><span class="COMM">// Perform on init failure.</span><span class="WHIT">
+<span class='line'>456</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">onError</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>457</span> </span><span class="WHIT">					</span><span class="NAME">onError</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>458</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>459</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>460</span> </span><span class="WHIT">	</span><span class="COMM">/*********************** /Initialize object ***************************/</span><span class="WHIT">
+<span class='line'>461</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>462</span> </span></pre></body></html>
