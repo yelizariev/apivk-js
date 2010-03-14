@@ -434,6 +434,25 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/APIVK.html#makeInstall">makeInstall</a></b>(ifInstalled)
+								</div>
+								<div class="description">Ask user to install application (add to their page) in indefinite
+loop until user finally installs application.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/APIVK.html#makeSettings">makeSettings</a></b>(settings)
+								</div>
+								<div class="description">Ask user to set appropriate settings and wait for user to do it.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/APIVK.html#removeCallback">removeCallback</a></b>(String, Number)
 								</div>
 								<div class="description">Remove callback function from the queue.</div>
@@ -969,7 +988,7 @@ reqParams)</dd>
 									
 								</dt>
 								<dd>onReady(data). Object "data" contain
-fields, which were specifing in getProfileInit</dd>
+fields, which were specifing in <a href="#getProfileInit">#getProfileInit</a></dd>
 							
 							</dl>
 						
@@ -1015,13 +1034,115 @@ fields, which were specifing in getProfileInit</dd>
 									
 								</dt>
 								<dd>interval collecting uid from
-calling getProfile for send all in one  request</dd>
+calling <a href="#getProfile">#getProfile</a> for send all in one  request</dd>
 							
 								<dt>
 									<span class="light fixedFont">{Object}</span> <b>fields</b>
 									
 								</dt>
 								<dd>necessary profile fields</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="makeInstall"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>makeInstall</b>(ifInstalled)
+					
+					</div>
+					<div class="description">
+						Ask user to install application (add to their page) in indefinite
+loop until user finally installs application.
+Warning!  Application will ask user to install application until he
+did it, so if user don't want to add application to his page, he
+can't run application.
+						
+							<br />
+							<i>Defined in: </i> <a href="../symbols/src/plugins_apivk.newuser.js.html">apivk.newuser.js</a>.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{Function}</span> <b>ifInstalled</b>
+									
+								</dt>
+								<dd>Callback function which executed if and
+                            only if application is installed. First
+                            time function executes if user installs
+                            application after makeInstall() called.
+                            But unlike
+                            addCallback('onApplicationAdded', ...),
+                            this function executes even if
+                            application already added before
+                            makeInstall() called. This means that if
+                            you use makeInstall(fucnName) then
+                            funcName() will be executed every time
+                            user runs application, even if he
+                            installed application only once long time
+                            ago.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="makeSettings"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>makeSettings</b>(settings)
+					
+					</div>
+					<div class="description">
+						Ask user to set appropriate settings and wait for user to do it.
+Warning! Application will ask user to specify settings until he did
+it, so if user don't want to set your settings, he can't run
+application.
+						
+							<br />
+							<i>Defined in: </i> <a href="../symbols/src/plugins_apivk.newuser.js.html">apivk.newuser.js</a>.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{Number}</span> <b>settings</b>
+									
+								</dt>
+								<dd>Settings you want user to set to application.
+                       You can use either integer value according to
+                       official Vkontakte documentation on
+                       http://vkontakte.ru/page7002134 or combination
+                       of .SETT_* constants.</dd>
 							
 							</dl>
 						
@@ -1090,7 +1211,7 @@ calling getProfile for send all in one  request</dd>
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.3.2 on Sun Mar 14 2010 20:02:20 GMT+0500 (YEKT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.3.2 on Sun Mar 14 2010 20:21:54 GMT+0500 (YEKT)
 		</div>
 	</body>
 </html>

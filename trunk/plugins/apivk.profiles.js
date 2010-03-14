@@ -1,3 +1,8 @@
+/**
+ * @fileOverview Add methods to class APIVK for getting adn caching
+ * user profiles data
+ */
+
 (function (){
 	var maxCachedRecords;
 	var cachedRecords = []; // [[uid, data], ...]
@@ -11,7 +16,7 @@
 	 * initialize apivk.profiles.js plugin
 	 * @param {Number} maxCachedRecords maximum cached user profiles records
 	 * @param {Number} collectingInterval interval collecting uid from
-	 * calling {@link getProfile} for send all in one  request
+	 * calling {@link #getProfile} for send all in one  request
 	 * @param {Object} fields necessary profile fields
 	 */
 	APIVK.prototype.getProfileInit = function(maxCachedRecords0,
@@ -28,7 +33,7 @@
 	/**
 	 * @param uid user id
 	 * @param {Function} onReady onReady(data). Object "data" contain
-	 * fields, which were specifing in {@link getProfileInit}
+	 * fields, which were specifing in {@link #getProfileInit}
 	 */
 	APIVK.prototype.getProfile = function(uid, onReady){
 		var r = _uid2value(uid, cachedRecords);
