@@ -1,3 +1,7 @@
+2010-04-07  Ivan Elizaryev  <ivann.exe@gmail.com>
+
+	* apivk.profiles.js: untabify, fix indent, some other fix
+
 2010-03-14  Ivan Elizaryev  <ivann.exe@gmail.com>
 
 	* apivk.profiles.js: some jsdoc improves
