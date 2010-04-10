@@ -34,17 +34,17 @@ function APIVK(api_secret, onSuccess, onFail, test_mode) {
    * @constant
    * @private
    */
-  const vk_js_xd_connection = 'http://vk.com/js/xd_connection.js';
+  var vk_js_xd_connection = 'http://vk.com/js/xd_connection.js';
   /**
    * @constant
    * @private
    */
-  const vk_js_lib_md5 = 'http://vk.com/js/lib/md5.js';
+  var vk_js_lib_md5 = 'http://vk.com/js/lib/md5.js';
   /**
    * @constant
    * @private
    */
-  const api_version = '2.0';
+  var api_version = '2.0';
   /**
    * Queue of callback functions used by addCallback() to perform correct
    * processing of multiple events assigned in different places
@@ -149,12 +149,12 @@ function APIVK(api_secret, onSuccess, onFail, test_mode) {
    * @private
    */
   function _onTimer(){
-    args = apiQueue.shift(); //fifo
-    _call(args);
     if (apiQueue.length == 0){
       clearInterval(timer);
       timer = null;
     }
+    args = apiQueue.shift(); //fifo
+    _call(args);
   }
   /**
    * @private

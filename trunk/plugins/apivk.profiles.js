@@ -18,9 +18,6 @@
   var maxCachedRecords;
   var cachedRecords = []; // [{"uid":123, "first_name", ...}, ...]
   var getProfilesFields;
-  var collected; //[[uids, onReady, noCachedUids], ...]
-  var timer;
-  var collectingInterval = 1000;
   var apivk;
   /**
    * initialize apivk.profiles.js plugin
@@ -29,10 +26,7 @@
    * calling {@link #getProfile} for send all in one  request
    * @param {Object} fields necessary profile fields
    */
-  APIVK.prototype.getProfilesInit = function(maxCachedRecords0,
-                                            collectingInterval0,
-                                            fields){
-    collectingInterval = collectingInterval0;
+  APIVK.prototype.getProfilesInit = function(fields, maxCachedRecords0){
     apivk = this;
     maxCachedRecords = maxCachedRecords0;
     getProfilesFields = fields.join(',');
@@ -47,14 +41,16 @@
     var s = _split(uids);
     if (s.noCached.length==0)
       onReady(s.cached);
-    else if (timer){
-      //if collecting
-      collected.push([uids, onReady, s.noCached]);
-    }else{
-      //begin collecting
-      timer = setTimeout(_onTimer, collectingInterval);
-      collected=[[uids, onReady, s.noCached]];
-    }
+    apivk.call('getProfiles',
+               {fields: getProfilesFields, uids: s.noCached},
+                function(data){
+                  cachedRecords=cachedRecords.concat(data);
+                  onReady(_split(uids).cached);
+                  var len=cachedRecords.length;
+                  if (len>maxCachedRecords)
+                    cachedRecords.splice(0, len-maxCachedRecords);
+                }
+              );
   };
    /**
     * @return {cached: [uidData], noCached: [uid]}
@@ -79,25 +75,5 @@
     return {cached:cached, noCached:noCached};
   }
   function _onTimer(){
-    clearTimeout(timer);
-    timer = null;
-    var uids = [];
-    each(collected, function(k, v){
-      uids.push(v[2].join(','));
-    });
-    uids = uids.join(',');
-    var collected2 = collected.slice(0);
-    apivk.call('getProfiles',
-               {fields: getProfilesFields, uids: uids},
-                function(data){
-                  cachedRecords=cachedRecords.concat(data);
-                  each(collected2, function(k,v){
-                    v[1](_split(v[0]).cached);
-                  });
-                    var len=cachedRecords.length;
-                  if (len>maxCachedRecords)
-                    cachedRecords.splice(0, len-maxCachedRecords);
-                }
-              );
   }
 })()
