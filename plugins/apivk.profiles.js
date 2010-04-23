@@ -41,16 +41,17 @@
     var s = _split(uids);
     if (s.noCached.length==0)
       onReady(s.cached);
-    apivk.call('getProfiles',
-               {fields: getProfilesFields, uids: s.noCached},
-                function(data){
-                  cachedRecords=cachedRecords.concat(data);
-                  onReady(_split(uids).cached);
-                  var len=cachedRecords.length;
-                  if (len>maxCachedRecords)
-                    cachedRecords.splice(0, len-maxCachedRecords);
-                }
-              );
+    else
+      apivk.call('getProfiles',
+                 {fields: getProfilesFields, uids: s.noCached},
+                 function(data){
+                   cachedRecords=cachedRecords.concat(data);
+                   onReady(_split(uids).cached);
+                   var len=cachedRecords.length;
+                   if (len>maxCachedRecords)
+                     cachedRecords.splice(0, len-maxCachedRecords);
+                 }
+                );
   };
    /**
     * @return {cached: [uidData], noCached: [uid]}
