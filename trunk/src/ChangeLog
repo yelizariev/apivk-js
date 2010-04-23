@@ -1,3 +1,7 @@
+2010-04-23  Ivan Elizaryev  <ivann.exe@gmail.com>
+
+	* apivk.js: update vk_js_xd_connection
+
 2010-04-07  Ivan Elizaryev  <ivann.exe@gmail.com>
 
 	* apivk.js: untabify, fix indent, change input params in APIVK.call
