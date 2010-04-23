@@ -152,9 +152,10 @@ function APIVK(api_secret, onSuccess, onFail, test_mode) {
     if (apiQueue.length == 0){
       clearInterval(timer);
       timer = null;
+    }else{
+      var args = apiQueue.shift(); //fifo
+      _call(args);
     }
-    args = apiQueue.shift(); //fifo
-    _call(args);
   }
   /**
    * @private
