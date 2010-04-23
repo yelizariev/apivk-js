@@ -34,7 +34,7 @@ function APIVK(api_secret, onSuccess, onFail, test_mode) {
    * @constant
    * @private
    */
-  var vk_js_xd_connection = 'http://vk.com/js/xd_connection.js';
+  var vk_js_xd_connection = 'http://vkontakte.ru/js/api/xd_connection.js';
   /**
    * @constant
    * @private
